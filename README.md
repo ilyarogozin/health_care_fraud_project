@@ -1,32 +1,59 @@
 # HEALTH CARE FRAUD PROJECT
 
 ## Как запустить проект:
-- Установите Docker, инструкция:
-https://docs.docker.com/get-docker/
-
-- Установите docker-compose, инструкция:
-https://docs.docker.com/compose/install/
 
 - Клонируйте репозиторий:
 ```
-git clone git@github.com:ilyarogozin/googlesheets.git
+git clone git@github.com:ilyarogozin/health_care_fraud_project.git
 ```
 
-- Соберите контейнеры и запустите их:
+- Создайте окружение и установите зависимости:
 ```
-docker-compose up -d --build
+python3 -m venv venv && pip install -r requirements.txt
+```
+
+- Зайдите в папку с файлом manage.py:
+```
+cd medical_services
 ```
 
 - Выполните миграции:
 ```
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
+python3 manage.py makemigrations && python3 manage.py migrate
 ```
 
 - Запустите проект:
 ```
-docker-compose exec web python manage.py runserver
+python3 manage.py runserver
 ```
 
 ## Примеры запросов:
+- POST с файлом client_org.xlsx
+```
+http://localhost:8000/api/upload_client_org/
+```
 
+- POST с файлом bills.xlsx
+```
+http://localhost:8000/api/upload_bills/
+```
+
+- GET для получения списка клиентов
+```
+http://localhost:8000/api/get_clients_list/
+```
+
+- GET для получения списка чеков
+```
+http://localhost:8000/api/get_bills_list/
+```
+
+- GET для получения списка чеков с фильтрацией по имени клиента или названию организации(фильтрация производится по содержанию, а не точному совпадению и не чувствительна к регистру)
+```
+http://localhost:8000/api/get_bills_list?client_org=client2org1
+```
+```
+http://localhost:8000/api/get_bills_list?client_name=client2
+```
+
+#### PS: все запросы тестировал через Postman(всё работает), файлы загружал через form-data
