@@ -73,11 +73,9 @@ def upload_bills(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     bills = pd.read_excel(xlsx_file, sheet_name='Лист1')
-    print(type(bills['date'][0]))
     for _, client_name, client_org, num, sum, timestamp, service in bills.itertuples():
         fraud_score = get_fraud_score(service)
         client_org = Organization.objects.get(name=client_org)
-        print(fraud_score)
         if fraud_score >= 0.9:
             client_org.fraud_weight += 1
             client_org.save()
