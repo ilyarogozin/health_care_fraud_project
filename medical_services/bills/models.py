@@ -96,6 +96,6 @@ class Bill(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=['client_org', 'num'],
-                name='unique_num_bills_organization'
+                name='unique_num_bill_organization'
             )
         ]
