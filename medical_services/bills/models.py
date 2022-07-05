@@ -35,7 +35,7 @@ class Organization(models.Model):
     )
     address = models.CharField(verbose_name='Адрес', max_length=500)
     fraud_weight = models.IntegerField(
-        verbose_name='Возможность мошенничества',
+        verbose_name='Возможные случаи мошенничества',
         default=0
     )
 
