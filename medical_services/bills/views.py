@@ -24,19 +24,24 @@ class ClientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = ClientSerializer
 
 
-@api_view(['POST'])
-def upload_client_org(request):
-    xlsx_file = request.FILES.get('filename')
-    if not xlsx_file:
+def get_and_check_file(request):
+    file = request.FILES.get('filename')
+    if not file:
         return Response(
             {'error': 'файл не загружен'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    if xlsx_file.name.split('.')[-1] != 'xlsx':
+    if file.name.split('.')[-1] != 'xlsx':
         return Response(
             {'error': 'файл должен быть .xlsx формата'},
             status=status.HTTP_400_BAD_REQUEST
         )
+    return file
+
+
+@api_view(['POST'])
+def upload_client_org(request):
+    xlsx_file = get_and_check_file(request)
     clients = pd.read_excel(xlsx_file, sheet_name='client')
     organizations = pd.read_excel(xlsx_file, sheet_name='organization')
     for name in clients['name']:
@@ -61,17 +66,7 @@ def upload_client_org(request):
 
 @api_view(['POST'])
 def upload_bills(request):
-    xlsx_file = request.FILES.get('filename')
-    if not xlsx_file:
-        return Response(
-            {'error': 'файл не загружен'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    if xlsx_file.name.split('.')[-1] != 'xlsx':
-        return Response(
-            {'error': 'файл должен быть .xlsx формата'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    xlsx_file = get_and_check_file(request)
     bills = pd.read_excel(xlsx_file, sheet_name='Лист1')
     for _, client_name, client_org, num, sum, timestamp, service in bills.itertuples():
         fraud_score = get_fraud_score(service)
