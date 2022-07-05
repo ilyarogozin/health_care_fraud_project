@@ -34,7 +34,10 @@ class Organization(models.Model):
         primary_key=True
     )
     address = models.CharField(verbose_name='Адрес', max_length=500)
-    fraud_weight = models.IntegerField(default=0)
+    fraud_weight = models.IntegerField(
+        verbose_name='Возможность мошенничества',
+        default=0
+    )
 
     class Meta:
         ordering = ('name',)
